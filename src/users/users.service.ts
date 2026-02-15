@@ -1,30 +1,23 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../database/prisma.service';
 
 @Injectable()
 export class UsersService {
-  private users: any[] = [];
-  private idCounter = 1;
+  constructor(private prisma: PrismaService) {}
 
   getUsers() {
-    return this.users;
+    return this.prisma.user.findMany();
   }
 
   addUser(user) {
-    const newUser = { id: this.idCounter++, ...user };
-    this.users.push(newUser);
-    return newUser;
+    return this.prisma.user.create({ data: user });
   }
 
   deleteUser(id: number) {
-    const index = this.users.findIndex(u => u.id === id);
-    if (index === -1) return null;
-    return this.users.splice(index, 1)[0];
+    return this.prisma.user.delete({ where: { id } });
   }
 
   updateUser(id: number, user) {
-    const index = this.users.findIndex(u => u.id === id);
-    if (index === -1) return null;
-    this.users[index] = { id, ...user };
-    return this.users[index];
+    return this.prisma.user.update({ where: { id }, data: user });
   }
 }

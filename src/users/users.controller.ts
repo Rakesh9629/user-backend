@@ -1,5 +1,6 @@
 import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
 import { UsersService } from './users.service';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -11,8 +12,12 @@ export class UsersController {
   }
 
   @Post()
-  createUser(@Body() user) {
-    return this.usersService.addUser(user);
+  async createUser(@Body() user: CreateUserDto) {
+    try {
+      return await this.usersService.addUser(user);
+    } catch (error) {
+      throw error;
+    }
   }
 
   @Delete(':id')
